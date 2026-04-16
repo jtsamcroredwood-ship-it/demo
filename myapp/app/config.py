@@ -23,5 +23,6 @@ class Settings(BaseSettings):
     class Config:
         # Resolve relative to project root so tools like Alembic work from any CWD.
         env_file = Path(__file__).resolve().parents[1] / ".env"
+        extra = "ignore"
 
 settings = Settings()

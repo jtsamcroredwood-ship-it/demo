@@ -9,6 +9,10 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
+
+# Define the Enum once at the module level to reuse it
+order_status_enum = postgresql.ENUM('pending', 'confirmed', 'cancelled', name='order_status', create_type=False)
 
 
 # revision identifiers, used by Alembic.
@@ -41,11 +45,15 @@ def upgrade() -> None:
     sa.UniqueConstraint('username')
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
+    
+    # Create the Enum type safely using the shared object
+    order_status_enum.create(op.get_bind(), checkfirst=True)
+
     op.create_table('orders',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('total_price', sa.Numeric(precision=10, scale=2), nullable=False),
-    sa.Column('status', sa.Enum('pending', 'confirmed', 'cancelled', name='order_status', metadata=sa.MetaData()), nullable=False),
+    sa.Column('status', order_status_enum, nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -71,4 +79,7 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_users_email'), table_name='users')
     op.drop_table('users')
     op.drop_table('products')
+    
+    # Drop the Enum type safely using the shared object
+    order_status_enum.drop(op.get_bind(), checkfirst=True)
     # ### end Alembic commands ###

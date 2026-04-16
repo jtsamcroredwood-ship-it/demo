@@ -22,7 +22,12 @@ import sys
 sys.path.append('.')
 from app.models.base import Base
 from app.models import user, product, order, order_item
+from app.config import settings
+
 target_metadata = Base.metadata
+
+# Override the sqlalchemy.url with the one from our app settings
+config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
