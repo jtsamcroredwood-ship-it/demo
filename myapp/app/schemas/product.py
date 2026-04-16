@@ -12,5 +12,6 @@ class ProductRead(BaseModel):
 	image_url: str | None = None
 	created_at: datetime
 
-	class Config:
-		orm_mode = True
+	model_config = {
+		"from_attributes": True
+	}

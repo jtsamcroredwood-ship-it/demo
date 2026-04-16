@@ -13,8 +13,15 @@
             <a href="/products">Products</a>
             <a href="/cart">Cart</a>
             <a href="/orders">Orders</a>
+            {% if request.session.get("user_id") %}
+            <span style="font-weight: 600; color: var(--primary);">👤 Logged in</span>
+            <form action="/logout" method="post" style="display:inline; margin: 0;">
+                <button type="submit" style="background:none; border:none; color:var(--text-main); font-weight:500; cursor:pointer; padding:0; transition: color 0.2s;">Logout</button>
+            </form>
+            {% else %}
             <a href="/register">Register</a>
             <a href="/login">Login</a>
+            {% endif %}
         </nav>
     </header>
     <main>

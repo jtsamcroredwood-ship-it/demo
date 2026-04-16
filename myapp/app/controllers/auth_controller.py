@@ -10,6 +10,8 @@ from ..templates_config import templates
 
 def register_page(request: Request):
     """Render the registration page."""
+    if request.session.get("user_id"):
+        return RedirectResponse(url="/", status_code=303)
     return templates.TemplateResponse(request, "auth/register.html", {})
 
 
@@ -36,6 +38,8 @@ def register(
 
 def login_page(request: Request):
     """Render the login page."""
+    if request.session.get("user_id"):
+        return RedirectResponse(url="/", status_code=303)
     return templates.TemplateResponse(request, "auth/login.html", {})
 
 
